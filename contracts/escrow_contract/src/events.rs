@@ -75,6 +75,37 @@ pub fn emit_milestone_approved(env: &Env, escrow_id: u64, milestone_id: u32, amo
     );
 }
 
+/// Emitted when a client rejects a milestone submission, returning it to Pending.
+///
+/// # Arguments
+/// * `escrow_id`    - The escrow ID
+/// * `milestone_id` - The rejected milestone
+/// * `client`       - Client's address
+pub fn emit_milestone_rejected(env: &Env, escrow_id: u64, milestone_id: u32, client: &Address) {
+    env.events().publish(
+        (symbol_short!("mil_rej"), escrow_id),
+        (milestone_id, client.clone()),
+    );
+}
+
+/// Emitted when a dispute is raised on a specific milestone.
+///
+/// # Arguments
+/// * `escrow_id`    - The escrow ID
+/// * `milestone_id` - The disputed milestone
+/// * `raised_by`    - Address of the party raising the dispute
+pub fn emit_milestone_disputed(
+    env: &Env,
+    escrow_id: u64,
+    milestone_id: u32,
+    raised_by: &Address,
+) {
+    env.events().publish(
+        (symbol_short!("mil_dis"), escrow_id),
+        (milestone_id, raised_by.clone()),
+    );
+}
+
 /// Emitted when funds are released to the freelancer for an approved milestone.
 ///
 /// # Arguments
@@ -86,6 +117,17 @@ pub fn emit_funds_released(env: &Env, escrow_id: u64, to: &Address, amount: i128
         (symbol_short!("funds_rel"), escrow_id),
         (to.clone(), amount),
     );
+}
+
+/// Emitted when all milestones are approved and the escrow is completed.
+///
+/// # Arguments
+/// * `escrow_id` - The completed escrow ID
+///
+/// Added to fix STE-03: indexer needs this event to update escrow status.
+pub fn emit_escrow_completed(env: &Env, escrow_id: u64) {
+    env.events()
+        .publish((symbol_short!("esc_done"), escrow_id), ());
 }
 
 /// Emitted when an escrow is cancelled and remaining funds returned to client.
