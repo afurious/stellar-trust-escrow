@@ -53,8 +53,6 @@ model Tenant {
   kycVerifications     KycVerification[]
   adminAuditLogs       AdminAuditLog[]
   auditLogs            AuditLog[]
-  chatRoomKeys         ChatRoomKey[]
-  chatMessages         ChatMessage[]
 
   @@map("tenants")
 }
